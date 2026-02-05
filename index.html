@@ -115,66 +115,83 @@
       document.body.innerHTML = `
         <div style="
           height:100vh;
+          width:100vw;
+          position:relative;
+          font-family:Poppins, sans-serif;
+          overflow:hidden;
           display:flex;
-          flex-direction:column;
           justify-content:center;
           align-items:center;
           background:radial-gradient(circle at top, #8b0000, #000000);
-          font-family:Poppins, sans-serif;
           text-align:center;
-          padding:20px;
-          overflow:hidden;
-          position:relative;
         ">
-          <h1 style="color:#ff4d6d; margin-bottom:20px;">
-            To us 🥂
-          </h1>
+          <!-- Canvas for hearts -->
+          <canvas id="hearts" style="
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index:1;
+          "></canvas>
 
-          <img 
-            src="us.jpg"  /* Replace with your uploaded image */
-            alt="Us ❤️"
-            style="
-              width:260px;
-              max-width:90%;
-              border-radius:20px;
-              box-shadow:0 15px 40px rgba(0,0,0,0.8);
-              opacity:0;
-              animation: fadeIn 2s ease forwards;
-            "
-          />
-
-          <p style="
-            margin-top:20px;
-            color:#f1f1f1;
-            font-size:18px;
+          <!-- Content centered above hearts -->
+          <div style="
+            position:relative;
+            z-index:2;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
           ">
-            This already feels right 😌
-          </p>
+            <h1 style="color:#ff4d6d; margin-bottom:20px;">
+              To us 🥂
+            </h1>
 
-          <canvas id="hearts"></canvas>
+            <img 
+              src="us.jpg"  /* Replace with your uploaded image */
+              alt="Us ❤️"
+              style="
+                width:260px;
+                max-width:90%;
+                border-radius:20px;
+                box-shadow:0 15px 40px rgba(0,0,0,0.8);
+                opacity:0;
+                animation: fadeIn 2s ease forwards;
+              "
+            />
+
+            <p style="
+              margin-top:20px;
+              color:#f1f1f1;
+              font-size:18px;
+            ">
+              This already feels right 😌
+            </p>
+          </div>
         </div>
       `;
 
       launchHearts();
     }
 
-    // Heart particle animation
+    // Heart particle animation - slower above, faster below
     function launchHearts() {
       const canvas = document.getElementById('hearts');
       const ctx = canvas.getContext('2d');
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
-      const hearts = Array.from({length: 60}, () => ({
+      const hearts = Array.from({length: 80}, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         size: Math.random() * 20 + 10,
-        speed: Math.random() * 2 + 1,
+        speed: Math.random() * 1 + 0.5,
         alpha: Math.random() * 0.5 + 0.5
       }));
 
-      function drawHeart(x, y, size) {
-        ctx.fillStyle = "red";
+      function drawHeart(x, y, size, alpha) {
+        ctx.fillStyle = `rgba(255,0,0,${alpha})`;
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.bezierCurveTo(x, y - size/2, x - size, y - size/2, x - size, y + size/3);
@@ -186,15 +203,27 @@
       }
 
       function animate() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         hearts.forEach(h => {
-          drawHeart(h.x, h.y, h.size);
-          h.y -= h.speed;
+          const centerY = canvas.height / 2;
+          let adjustedSpeed = h.speed;
+
+          if(h.y < centerY) {
+            adjustedSpeed = h.speed * 0.5; // slower above
+          } else {
+            adjustedSpeed = h.speed * 1.5; // faster below
+          }
+
+          drawHeart(h.x, h.y, h.size, h.alpha);
+          h.y -= adjustedSpeed;
+
           if (h.y + h.size*2 < 0) {
             h.y = canvas.height + h.size*2;
             h.x = Math.random() * canvas.width;
           }
         });
+
         requestAnimationFrame(animate);
       }
 
