@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Be My Valentine 💖</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <style>
     body {
       margin: 0;
@@ -15,6 +14,7 @@
       justify-content: center;
       align-items: center;
       text-align: center;
+      overflow: hidden;
     }
 
     .card {
@@ -71,18 +71,20 @@
       margin-top: 20px;
       font-size: 14px;
       color: #777;
-   
-      @keyframes fadeIn {
-  to { opacity: 1; }
-      }
+    }
+
+    /* Fade-in animation for image */
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
   </style>
 </head>
 
 <body>
 
   <div class="card">
-    <h1>Thando ♥️</h1>
-    <p>Will you be my Valentine?</p>
+    <h1>Thando 💖</h1>
+    <p>Will you please be my Valentine?</p>
 
     <div class="buttons">
       <button id="yesBtn" onclick="yesClicked()">Yes 💕</button>
@@ -95,6 +97,7 @@
   </div>
 
   <script>
+    // NO button dodging
     const noBtn = document.getElementById('noBtn');
 
     function moveButton() {
@@ -107,66 +110,96 @@
     noBtn.addEventListener('mouseover', moveButton);
     noBtn.addEventListener('touchstart', moveButton);
 
+    // YES click - cinematic final page
     function yesClicked() {
-  document.body.innerHTML = `
-    <div style="
-      height:100vh;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      background:radial-gradient(circle at top, #8b0000, #000000);
-      font-family:Poppins, sans-serif;
-      text-align:center;
-      padding:20px;
-      overflow:hidden;
-      position:relative;
-    ">
-      <h1 style="color:#ff4d6d; margin-bottom:20px;">
-        To us 🥂
-      </h1>
+      document.body.innerHTML = `
+        <div style="
+          height:100vh;
+          display:flex;
+          flex-direction:column;
+          justify-content:center;
+          align-items:center;
+          background:radial-gradient(circle at top, #8b0000, #000000);
+          font-family:Poppins, sans-serif;
+          text-align:center;
+          padding:20px;
+          overflow:hidden;
+          position:relative;
+        ">
+          <h1 style="color:#ff4d6d; margin-bottom:20px;">
+            To us 🥂
+          </h1>
 
-      <img 
-        src="us.jpg"
-        alt="Us ❤️"
-        style="
-          width:260px;
-          max-width:90%;
-          border-radius:20px;
-          box-shadow:0 15px 40px rgba(0,0,0,0.8);
-          opacity:0;
-          animation: fadeIn 2s ease forwards;
-        "
-      />
+          <img 
+            src="us.jpg"  /* Replace with your uploaded image */
+            alt="Us ❤️"
+            style="
+              width:260px;
+              max-width:90%;
+              border-radius:20px;
+              box-shadow:0 15px 40px rgba(0,0,0,0.8);
+              opacity:0;
+              animation: fadeIn 2s ease forwards;
+            "
+          />
 
-      <p style="
-        margin-top:20px;
-        color:#f1f1f1;
-        font-size:18px;
-      ">
-        Ungangisola kanjani 😌
-      </p>
+          <p style="
+            margin-top:20px;
+            color:#f1f1f1;
+            font-size:18px;
+          ">
+            This already feels right 😌
+          </p>
 
-      <canvas id="hearts"></canvas>
-    </div>
-  `;
+          <canvas id="hearts"></canvas>
+        </div>
+      `;
 
-  launchHearts();
+      launchHearts();
     }
-    
-  <script>
-  // NO button moves
-  const noBtn = document.getElementById('noBtn');
-  noBtn.addEventListener('mouseover', moveButton);
-  noBtn.addEventListener('touchstart', moveButton);
 
-  function moveButton() { /* ... */ }
+    // Heart particle animation
+    function launchHearts() {
+      const canvas = document.getElementById('hearts');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-  // YES click
-  function yesClicked() { /* final page code with image fade-in + <canvas> */ }
+      const hearts = Array.from({length: 60}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 20 + 10,
+        speed: Math.random() * 2 + 1,
+        alpha: Math.random() * 0.5 + 0.5
+      }));
 
-  // Heart particles
-  function launchHearts() { /* heart animation code */ }
+      function drawHeart(x, y, size) {
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(x, y - size/2, x - size, y - size/2, x - size, y + size/3);
+        ctx.bezierCurveTo(x - size, y + size, x, y + size*1.5, x, y + size*2);
+        ctx.bezierCurveTo(x, y + size*1.5, x + size, y + size, x + size, y + size/3);
+        ctx.bezierCurveTo(x + size, y - size/2, x, y - size/2, x, y);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function animate() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        hearts.forEach(h => {
+          drawHeart(h.x, h.y, h.size);
+          h.y -= h.speed;
+          if (h.y + h.size*2 < 0) {
+            h.y = canvas.height + h.size*2;
+            h.x = Math.random() * canvas.width;
+          }
+        });
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
   </script>
 
 </body>
