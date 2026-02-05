@@ -105,21 +105,41 @@
     noBtn.addEventListener('touchstart', moveButton);
 
     function yesClicked() {
-      document.body.innerHTML = `
-        <div style="
-          height:100vh;
-          display:flex;
-          justify-content:center;
-          align-items:center;
-          background:linear-gradient(135deg, #ff9a9e, #fad0c4);
-          font-family:Poppins, sans-serif;
-          text-align:center;">
-          <h1 style="color:white;">
-            Yaaay!! 💖🥰<br><br>
-            See you on Valentine’s Day 😌
-          </h1>
-        </div>
-      `;
+  document.body.innerHTML = `
+    <div style="
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      background:linear-gradient(135deg, #ff9a9e, #fad0c4);
+      font-family:Poppins, sans-serif;
+      text-align:center;
+      padding:20px;">
+
+      <h1 style="color:white; margin-bottom:20px;">
+        To us 🥂💖
+      </h1>
+
+      <img 
+        src="https://media.giphy.com/media/3o6ZsX2J0P5Gz9Z3rO/giphy.gif"
+        alt="Gatsby Cheers"
+        style="
+          width:260px;
+          border-radius:20px;
+          box-shadow:0 15px 30px rgba(0,0,0,0.3);
+        "
+      />
+
+      <p style="
+        margin-top:20px;
+        color:white;
+        font-size:18px;
+      ">
+        I’m really glad you said yes 😌
+      </p>
+    </div>
+  `;
     }
   </script>
 
